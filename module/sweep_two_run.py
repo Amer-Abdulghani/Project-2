@@ -1,19 +1,11 @@
 # scripts/sweep_two_run.py
 # Two-run (Ex/Ey) Lumerical FDTD sweep -> Jones (linear) -> circular basis -> CSV
 from __future__ import annotations
-import os, sys, argparse, numpy as np, pandas as pd
-
+import os,importlib.util, sys, argparse, numpy as np, pandas as pd
+from pathlib import Path
 def import_lumapi():
-    """
-    Import lumapi from the path specified in the LUMAPI_PATH environment variable.
-    On Windows it often looks like:
-      C:\Program Files\Lumerical\v241\api\python\lumapi.py
-    """
-    p = os.environ.get("LUMAPI_PATH", r"C:\Program Files\Lumerical\v241\api\python\lumapi.py")
-    import importlib.util
-    spec = importlib.util.spec_from_file_location("lumapi", p)
-    if spec is None or spec.loader is None:
-        raise RuntimeError(f"Could not load lumapi from {p}. Set LUMAPI_PATH env var.")
+    LUMAPI_PATH = os.environ.get("LUMAPI_PATH")
+    spec = importlib.util.spec_from_file_location("lumapi", LUMAPI_PATH)
     lumapi = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(lumapi)
     return lumapi
